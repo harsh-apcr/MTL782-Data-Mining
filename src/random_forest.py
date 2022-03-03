@@ -16,6 +16,8 @@ Please follow these general instructions so that it'll be easy for others to use
   Parameters: Explain what are the parameters and parameter-types which the function expects
   Return value: Explain what the function returns
 
+* Please create your own branch and do not progress on main until you've completed your assigned task
+
 An example is given below
 """
 
