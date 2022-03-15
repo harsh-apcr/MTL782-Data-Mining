@@ -59,7 +59,7 @@
 #### Task List
 * [x] Decide on which data-set to work on  (Codon Usage Data Set)
 * [x] Report on the data-set chosen
-* [ ] Decision Tree 
+* [x] Decision Tree 
 * [ ] Random Forest
 * [ ] Naïve Bayes Classifier
 * [ ] KNN Classifier
