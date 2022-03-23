@@ -5,7 +5,7 @@ from eval_metrics import confusion_matrix, accuracy
 
 
 # vary n_neighbors only from 1 to 5
-def tree_training(class_vars, X_train, y_train, X_test, y_test, n_neighbors):
+def knn_training(class_vars, X_train, y_train, X_test, y_test, n_neighbors):
     """
     Hyper-Parameters of KNN
     ----------
