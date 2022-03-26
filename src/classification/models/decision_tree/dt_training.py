@@ -4,8 +4,9 @@ sys.path.append('../../model_evaluation')
 from eval_metrics import confusion_matrix, accuracy
 
 
-def tree_training(max_leaf_nodes, class_vars, X_train, y_train, X_test, y_test):
+def tree_training(class_vars, X_train, y_train, X_test, y_test, max_leaf_nodes, criterion):
     model_tree = DecisionTreeClassifier(max_leaf_nodes=max_leaf_nodes,
+                                        criterion = criterion,
                                         class_weight='balanced')
     model_tree.fit(X_train, y_train)
 

@@ -5,7 +5,7 @@ from eval_metrics import confusion_matrix, accuracy
 
 
 # You could choose any number of hyper parameters for tuning
-def rf_training(class_vars, X_train, y_train, X_test, y_test, max_features,random_state=None):
+def rf_training(class_vars, X_train, y_train, X_test, y_test, max_features, random_state=None):
     """
     Hyper-Parameters of Random Forest
     ----------
@@ -15,7 +15,7 @@ def rf_training(class_vars, X_train, y_train, X_test, y_test, max_features,rando
 
     model_forest = RandomForestClassifier(max_features=max_features,
                                           random_state=random_state,
-                                          n_estimators=500,
+                                          n_estimators=100,
                                           bootstrap=True,
                                           class_weight='balanced')
     model_forest.fit(X_train, y_train)

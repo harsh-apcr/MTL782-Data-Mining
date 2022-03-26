@@ -5,14 +5,14 @@ from eval_metrics import confusion_matrix, accuracy
 
 
 # vary n_neighbors only from 1 to 5
-def knn_training(class_vars, X_train, y_train, X_test, y_test, n_neighbors):
+def knn_training(class_vars, X_train, y_train, X_test, y_test, n_neighbors, p):
     """
     Hyper-Parameters of KNN
     ----------
     n_neighbors : int
         Number of neighbors to use
     """
-    knn_predictor = KNeighborsClassifier(n_neighbors=n_neighbors)
+    knn_predictor = KNeighborsClassifier(n_neighbors=n_neighbors, p=p)
     knn_predictor.fit(X_train, y_train)
 
     y_train_pred = knn_predictor.predict(X_train)

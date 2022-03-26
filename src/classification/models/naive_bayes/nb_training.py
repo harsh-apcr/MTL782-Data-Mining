@@ -18,6 +18,7 @@ def nb_training(class_vars, X_train, y_train, X_test, y_test, priors=None, var_s
         variances for calculation stability.
     """
     model = GaussianNB(priors=priors, var_smoothing=var_smoothing)
+    
     model.fit(X_train, y_train)
 
     y_train_pred = model.predict(X_train)
