@@ -13,31 +13,31 @@
 * ### Problems with the data set
     1. Data set contains missing values
     2. Some genomic entries do not have suffient number of codon to make a reliable prediction
-    3. Class distributions for Kingdom and DNAtype class are highly skewed.
-        ```python
-        import pandas as pd
-        df = pd.read_csv('../../codon-usage-data-set/codon_usage.csv')
+       1. Class distributions for Kingdom and DNAtype class are highly skewed.
+           ```python
+           import pandas as pd
+           df = pd.read_csv('../../codon-usage-data-set/codon_usage.csv')
 
-        df.groupby('Kingdom').size()
-        df.groupby('DNAtype').size()
-        ```
-        | DNAtype  |   Frequency | Kingdom | Frequency |                     
-        |-------    |   --------- | ----- | ---- |
-        | 0        |      9267  |arc  |   126 |
-        | 1        |       2899  |bct   | 2920 | 
-        | 2        |        816 |inv   | 1345 |
-        | 3        |          2 |mam   | 572 |
-        | 4        |         31 |phg   |220 |
-        | 5        |          2 |plm   |18 |
-        |6        |           1 |pln   | 2523 |
-        |7        |           1  |pri   |  180 | 
-        | 9        |           2  |rod   |  215 | 
-        | 11       |          2  |vrl   | 2832 |
-        | 12       |           5  |vrt   | 2077 |
+           df.groupby('Kingdom').size()
+           df.groupby('DNAtype').size()
+           ```
+           | DNAtype  |   Frequency |     | Kingdom | Frequency |                     
+           |-------    |-----|---------| ----- | ---- |
+           | 0        |      9267  |     | arc     | 126     |
+           | 1        |       2899  |     | bct     | 2920    | 
+           | 2        |        816 |     | inv     | 1345    |
+           | 3        |          2 |     | mam     | 572     |
+           | 4        |         31 |     | phg     | 220     |
+           | 5        |          2 |     | plm     | 18      |
+           |6        |           1 |     | pln     | 2523    |
+           |7        |           1  |     | pri     | 180     | 
+           | 9        |           2  |     | rod     | 215     | 
+           | 11       |          2  |     | vrl     | 2832    |
+           | 12       |           5  |     |  vrt | 2077    |
 
-        As we can clearly observe DNAtypes 3-12 are infrequent and may not produce reliable predictions
+           As we can clearly observe DNAtypes 3-12 are infrequent and may not produce reliable predictions
 
-        Some of the kingdom classes for ex 'arc'(archea), 'plm'(bacterial plasmid) are relatively infrequent
+           Some of the kingdom classes for ex 'arc'(archea), 'plm'(bacterial plasmid) are relatively infrequent
 
 * ### Appropriate responses to above data quality problems
     
@@ -52,17 +52,89 @@
         1. Exclude the genome entries classified as ‘plm’ (mostly to avoid imbalanced classes in our machine learning models, since there are only 18 plasmids).
 
     
-    
-
-
-
 #### Task List
 * [x] Decide on which data-set to work on  (Codon Usage Data Set)
 * [x] Report on the data-set chosen
 * [x] Decision Tree 
-* [ ] Random Forest
-* [ ] Naïve Bayes Classifier
-* [ ] KNN Classifier
+* [x] Random Forest
+* [x] Naïve Bayes Classifier
+* [x] KNN Classifier
+</br>
 
+# Assignment 2
 
+## *Apriori* Algorithm Implementation (Python 3)
 
+### 1. Apriori Algorithm
+Apriori is given by R. Agrawal and R. Srikant in 1994 for frequent item set mining and association rule learning. It proceeds by identifying the frequent individual items in the database and extending them to larger and larger item sets as long as those item sets appear sufficiently often.</br>
+
+This implementation of *Apriori* Algorithm is based on **Hash-Tree Data Structure** to efficiently do support-counting of candidate itemsets
+
+### 2. Improvement over the usual *Apriori*-Algorithm (for Frequent Itemset Generation)
+
+We use AprioriTID algorithm as an improvement over usual apriori algorithm
+
+The Algorithm AprioriTID uses the `apriori-gen` function to determine the candidate itemsets before the pass begins. In this algorithm, database D is not used for counting support after the first pass. Rather a set C̅<sub>k</sub> is used for this purpose.
+
+Each member of the set C̅<sub>k</sub> is of the form < TID, X<sub>k</sub> >,
+where each X<sub>k</sub> is a potentially large k-itemset present in the transaction with identier TID. 
+For k = 1, C̅<sub>1</sub> corresponds to the database D, although conceptually each item i is replaced by the itemset {i}
+
+C̅<sub>k</sub> is generated as follows 
+`if (C_t != { }) then C̅_k += <t.TID, C_t>`
+
+In addition, for large values of k, each entry may be smaller than the corresponding
+transaction because very few candidates may be contained in the transaction. However, for small
+values for k, each entry may be larger than the corresponding transaction because an entry in C<sub>k</sub>
+includes all candidate k-itemsets contained in the transaction.
+
+### 3. How to use this library ?
+Source code is contained in `src\rule-mining\apriori\` where `apriori` directory is a python package and you can import the following functions:
+
+For Frequent Itemset Generation
+
+```python
+gen_freq_itemsets(transactions,min_sup=0.5,max_len=None,max_leaf_size=15,max_children=50)
+  ```
+_(see the implementation docstrings for more information about the parameters)_
+
+For Rule Mining 
+
+```python
+gen_rules(freq_itemsets, min_conf=0.6)
+```
+_(see the implementation docstrings for more information about the parameters)_
+
+## FP-Growth Algorithm Implementation (Python 3)
+
+### 1. FP-Growth Algorithm
+FP stands for frequent pattern. 
+Frequent pattern discovery (or FP discovery, FP mining, or Frequent itemset mining) is part of knowledge discovery in databases, Massive Online Analysis, and data mining; it describes the task of finding the most frequent and relevant patterns in large datasets.
+
+It is a divide-and-conquer algorithm and uses **FP-Tree Data Structure** to compress the database in a more compact tree-representation and using it to generate frequent itemsets in just two passes over the database.
+This algorithm in general runs much faster than *Apriori* algorithm
+
+### 2. Improvement over the usual FP-Growth
+
+### 3. How to use this library
+Source code is contained in `src\rule-mining\fpgrowth\` where `fpgrowth` directory is a python package and you can import the following functions:
+
+For Frequent Itemset Generation
+
+```python
+gen_freq_itemsets(transactions, null_label=None, min_sup=0.5)
+  ```
+_(see the implementation docstrings for more information about the parameters)_
+
+## About the dataset used
+The following dataset was donated by Tom Brijs and contains the (anonymized) retail market basket data from an anonymous Belgian retail store.
+The data are provided ’as is’.
+
+More details can be found [here](http://fimi.uantwerpen.be/data/retail.pdf).
+
+## Remarks
+Except for standard Python 3 libraries, no other libraries have been used for above implementations.
+## References
+1. *Introduction to Data Mining*, by P.-N. Tan, M. Steinbach, V. Kumar, Addison-Wesley.
+2. *Fast Algorithms for Mining Association Rules*, by Rakesh Agrawal, Ramakrishnan Srikant, IBM Almaden Research Center
+3. *Mining Frequent Patterns without Candidate Generation: A Frequent-Pattern Tree Approach*, by Jiawei Han, Jian Pei, Yiwen Yin, Runying Mao

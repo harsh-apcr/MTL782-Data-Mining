@@ -1,3 +1,9 @@
+"""
+Created on Sun March 24 23:40:21 2021
+@author: Harsh Sharma (Student ID: 2019MT60628)
+Title: Apriori Algorithm Implementation In Python 3
+"""
+
 from llist import DLinkedList
 from hashtree import HashTree
 
@@ -6,7 +12,6 @@ class Rule:
     """
     Class for Rules
     """
-
     def __init__(self, antecedent, consequent, confidence):
         """
         Initialize a rule :- antecedent ---> consequent, conf = confidence
@@ -50,10 +55,12 @@ def _private_generate_freq_one_itemsets(transactions, n, min_sup=0.6):
                 freq_one_itemsets[s] += 1
             else:
                 freq_one_itemsets[s] = 1
-    list_items = [(s, supp_count) for s, supp_count in freq_one_itemsets.items()]
-    for s, sup_count in list_items:
+    infrequent_items = []
+    for item, sup_count in freq_one_itemsets.items():
         if sup_count < n * min_sup:
-            del freq_one_itemsets[s]
+            infrequent_items.append(item)
+    for item in infrequent_items:
+        del freq_one_itemsets[item]
     return freq_one_itemsets
 
 
@@ -144,6 +151,7 @@ def apriori_gen(freq_itemsets, k):
                 # candidate_itemset is infrequent
                 # we'll prune it immediately
                 to_prune.append(j)
+                break
     for idx in reversed(to_prune):
         candidate_itemsets.remove(idx)
 
@@ -224,9 +232,7 @@ def ap_genrules(freq_itemsets, k_itemset, k, min_conf, H, m, rules):
         _H = dict()
         for itemset, _ in H:
             _itemset = tuple(itemset)
-            if _itemset not in freq_itemsets[m]:
-                # if _itemset is infrequent then all it's supersets are infrequent
-                continue
+            # _itemset is subset of k_itemset and hence must be in freq_itemsets[m]
             _H[_itemset] = freq_itemsets[m][_itemset]
 
         to_remove = []
@@ -264,11 +270,12 @@ def gen_rules(freq_itemsets, min_conf=0.6):
         if k == 1:
             k += 1
             continue
-        H = dict()  # set of all rule consequent of size 1 from freq_itemsets_k
+        H = dict()  # set of all rule consequent of size 1 from each frequent-itemset from freq_itemsets_k
         for k_itemset in freq_itemsets_k:
-            # k_itemset is a frequent k-itemet
+            # k_itemset is a frequent k-itemset
             for item in k_itemset:
                 H[(item,)] = freq_itemsets[0][(item,)]
             ap_genrules(freq_itemsets, k_itemset, k, min_conf, H, 1, rules)
+            H.clear()
         k += 1
     return rules
