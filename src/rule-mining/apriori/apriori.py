@@ -105,7 +105,7 @@ def _private_insert_all_except(ls, idx):
 
 
 # generate candidate (k+1)-itemset from freq k-itemsets
-# freq_itemsets is a dictionary with keys as frozenset and values as their support count
+# freq_itemsets is a dictionary with keys as tuples and values as their support count
 # k is size of freq_itemsets
 def apriori_gen(freq_itemsets, k):
     """

@@ -3,12 +3,12 @@ class ListFullException(Exception):
 
 
 class Node:
-    # val is supposed to be a list (item-set)
+    # val is supposed to be a python sequence (item-set) (list by default)
     def __init__(self, val=None, supp_count=0, next=None, prev=None):
         if val is None:
             self.val = []
         else:
-            self.val = val
+            self.val = val  # any python sequence
         self.next = next
         self.prev = prev
         self.supp_count = supp_count
