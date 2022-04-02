@@ -1,9 +1,10 @@
 """
-Created on Sun March 29 16:67:11 2021
+Created on Sun April 1 14:49:37 2022
 @author: Harsh Sharma (Student ID: 2019MT60628)
-Title: FP-Growth Implementation using Python.
+Title: FP-Growth, FP-Growth with Projected DBs Implementation using Python.
 """
-from llist import LinkedList
+
+from linkedlist import LinkedList
 
 
 class FPTreeNode:
@@ -173,23 +174,24 @@ class FPTree:
                                                           min_supp_count,
                                                           freq_itemsets)
 
-    # read and test
-    def gen_freq_itemsets_fp(self, freq_items, min_supp_count):
+    def gen_freq_itemsets_fp(self, freq_items, min_supp_count, suffix=None):
         """
         Generates frequent itemsets from FP-tree
-        :param freq_items: list of item labels, in increasing order of supp_count
+        :param freq_items: list of item labels, in any order
         :param min_supp_count: int, minimum support count threshold
+        :param suffix: suffix for the conditional fp-tree : self
         :return: List of all frequent itemsets
         """
+        suffix = [] if suffix is None else suffix
         freq_itemsets = []
         for item in freq_items:
-            self._private_gen_freq_itemsets([], item, min_supp_count, freq_itemsets)
+            self._private_gen_freq_itemsets(suffix, item, min_supp_count, freq_itemsets)
         return freq_itemsets
 
 
 def gen_freq_itemsets(transactions, null_label=None, min_sup=0.5):
     """
-    Generates frequent itemsets, along with their support counts
+    Generates frequent itemsets, using standard FP-growth algorithm (using FP-tree)
     :param transactions: python dictionary, transaction IDs (keys), contains list of transactions(value)
     :param null_label: label of root node (generally should be something i.e. a label of any item)
     :param min_sup: minimum support threshold
@@ -224,3 +226,71 @@ def gen_freq_itemsets(transactions, null_label=None, min_sup=0.5):
     # freq_items are inserted in increasing order of support counts
     return fp_tree.gen_freq_itemsets_fp(list(freq_one_itemsets.keys()),
                                         min_supp_count=min_sup * n)
+
+
+def gen_freq_itemsets_projected_DB(transactions, null_label=None, min_sup=0.5):
+    """
+    Generates frequent itemsets, using projected database method variant of FP-growth
+    This function should be used when the dataset is too large that complete FP-tree cannot be put in main memory
+    :param transactions: python dictionary, transaction IDs (keys), contains list of transactions(value)
+    :param null_label: label of root node (generally should be something i.e. a label of any item)
+    :param min_sup: minimum support threshold
+    :return: python dictionary of frequent itemsets (key), along with their support counts(value)
+    """
+    n = len(transactions)
+    freq_one_itemsets = dict()
+    # First scan of the database to get the support counts of individual items
+    for _, t in transactions.items():
+        for item in t:
+            if item in freq_one_itemsets:
+                freq_one_itemsets[item] += 1
+            else:
+                freq_one_itemsets[item] = 1
+    infrequent_items = []
+    for item, sup_count in freq_one_itemsets.items():
+        if sup_count < n * min_sup:
+            infrequent_items.append(item)
+    for item in infrequent_items:
+        del freq_one_itemsets[item]
+
+    # freq_one_itemsets contains (key=item, value=supp_count) pairs, with only frequent items
+
+    frequent_itemsets = []
+    for item in freq_one_itemsets:
+        # construct projected database
+        projected_DB = {TID: [item_ for item_ in transaction
+                              if item_ in freq_one_itemsets
+                              and item_ != item
+                              and freq_one_itemsets[item_] >= freq_one_itemsets[item]]
+                        for TID, transaction in transactions.items() if item in transaction}
+        # Note: If we are assured that transaction width is not too large (bounded above by a constant) then
+        # membership test can be considered O(1)
+
+        projected_DB_freq_items = dict()
+        for _, t in projected_DB.items():
+            for _item in t:
+                if _item in projected_DB_freq_items:
+                    projected_DB_freq_items[_item] += 1
+                else:
+                    projected_DB_freq_items[_item] = 1
+        _infrequent_items = []
+        for _item, sup_count in projected_DB_freq_items.items():
+            if sup_count < n * min_sup:
+                _infrequent_items.append(_item)
+        for _item in _infrequent_items:
+            del projected_DB_freq_items[_item]
+
+        conditional_fp_tree = FPTree(null_label=null_label)
+
+        # Second scan of the database to construct FP-tree
+        for _, transaction in projected_DB.items():
+            # _transaction must be in decreasing order of support count
+            _transaction = [_item for _item in transaction if _item in projected_DB_freq_items]
+            _transaction = sorted(_transaction, key=lambda x: projected_DB_freq_items[x], reverse=True)
+            conditional_fp_tree.insert(_transaction)
+        # collect all the frequent itemsets from item-conditional fp-tree
+        frequent_itemsets.append([item])
+        frequent_itemsets.extend(conditional_fp_tree.gen_freq_itemsets_fp(projected_DB_freq_items,
+                                                                          min_supp_count=min_sup * n,
+                                                                          suffix=[item]))
+    return frequent_itemsets

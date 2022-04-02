@@ -1,5 +1,5 @@
 """
-Created on Sun March 24 23:40:21 2021
+Created on Sun March 24 23:40:21 2022
 @author: Harsh Sharma (Student ID: 2019MT60628)
 Title: Apriori Algorithm Implementation In Python 3
 """
@@ -158,7 +158,7 @@ def apriori_gen(freq_itemsets, k):
     return candidate_itemsets
 
 
-def gen_freq_itemsets(transactions, min_sup=0.5, max_len=None, max_leaf_size=15, max_children=50):
+def gen_freq_itemsets(transactions, min_sup=0.5, max_len=None, max_leaf_size=3, max_children=89):
     """Get frequent itemsets from a transaction basket
         Parameters
         -----------
@@ -174,9 +174,9 @@ def gen_freq_itemsets(transactions, min_sup=0.5, max_len=None, max_leaf_size=15,
           Maximum length of the item-sets generated. If `None` (default) all
           possible item-sets lengths (under the apriori condition) are evaluated.
 
-        max_leaf_size : int (default : 50)
+        max_leaf_size : int (default : 3)
 
-        max_children : int (default : 100)
+        max_children : int (default : 89)
 
         Returns
         -----------

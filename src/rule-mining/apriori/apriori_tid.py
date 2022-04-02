@@ -1,4 +1,8 @@
-import itertools
+"""
+Created on Sun March 30 18:37:43 2022
+@author: Harsh Sharma (Student ID: 2019MT60628)
+Title: AprioriTID Algorithm Implementation In Python 3
+"""
 
 from llist import DLinkedList
 
@@ -206,7 +210,7 @@ def gen_freq_itemsets_tid(transactions, min_sup=0.5, max_len=None):
             freq_itemsets[k] is a python dictionary :
                 key: Itemset , denoting frequent itemset
                 value: int, supp_count of the itemset
-            """
+    """
     # list of all freq_itemset
     # freq_itemset[k] gives all frequent k-itemsets
     n = len(transactions)

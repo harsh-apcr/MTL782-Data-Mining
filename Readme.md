@@ -1,3 +1,9 @@
+# MTL-782
+### Harsh Sharma (2019MT60628)
+### Jasmeet Singh (2019MT60631)
+### Rishav Rukhmanghd Raj (2019MT10652)
+
+---
 # Assignment 1
 
 ## What the data is all about ?
@@ -51,16 +57,6 @@
 
         1. Exclude the genome entries classified as ‘plm’ (mostly to avoid imbalanced classes in our machine learning models, since there are only 18 plasmids).
 
-    
-#### Task List
-* [x] Decide on which data-set to work on  (Codon Usage Data Set)
-* [x] Report on the data-set chosen
-* [x] Decision Tree 
-* [x] Random Forest
-* [x] Naïve Bayes Classifier
-* [x] KNN Classifier
-</br>
-
 # Assignment 2
 
 ## *Apriori* Algorithm Implementation (Python 3)
@@ -74,19 +70,18 @@ This implementation of *Apriori* Algorithm is based on **Hash-Tree Data Structur
 
 We use AprioriTID algorithm as an improvement over usual apriori algorithm
 
-The Algorithm AprioriTID uses the `apriori-gen` function to determine the candidate itemsets before the pass begins. In this algorithm, database D is not used for counting support after the first pass. Rather a set C̅<sub>k</sub> is used for this purpose.
+In this algorithm database D is not used for counting support after the first pass. Rather a set C̅<sub>k</sub> is used for this purpose.
 
-Each member of the set C̅<sub>k</sub> is of the form < TID, X<sub>k</sub> >,
-where each X<sub>k</sub> is a potentially large k-itemset present in the transaction with identier TID. 
+Each member of the set C̅<sub>k</sub> is of the form < TID, {X<sub>k</sub>} >,
+where each X<sub>k</sub> is a potentially large k-itemset present in the transaction with identifier TID. 
 For k = 1, C̅<sub>1</sub> corresponds to the database D, although conceptually each item i is replaced by the itemset {i}
 
 C̅<sub>k</sub> is generated as follows 
-`if (C_t != { }) then C̅_k += <t.TID, C_t>`
+`if (C_t != { }) then C̅_k += <t.TID, C_t>`, 
+where `C_t` is set of candidate k-itemsets belonging to transaction `t`
 
 In addition, for large values of k, each entry may be smaller than the corresponding
-transaction because very few candidates may be contained in the transaction. However, for small
-values for k, each entry may be larger than the corresponding transaction because an entry in C<sub>k</sub>
-includes all candidate k-itemsets contained in the transaction.
+transaction because very few candidates may be contained in the transaction, hence a significant perfomance gain is expected.
 
 ### 3. How to use this library ?
 Source code is contained in `src\rule-mining\apriori\` where `apriori` directory is a python package and you can import the following functions:
@@ -95,6 +90,8 @@ For Frequent Itemset Generation
 
 ```python
 gen_freq_itemsets(transactions,min_sup=0.5,max_len=None,max_leaf_size=15,max_children=50)
+
+gen_freq_itemsets_tid(transactions,min_sup=0.5,max_len=None)
   ```
 _(see the implementation docstrings for more information about the parameters)_
 
@@ -116,6 +113,19 @@ This algorithm in general runs much faster than *Apriori* algorithm
 
 ### 2. Improvement over the usual FP-Growth
 
+We use **Projected Databases** method to improve upon the usual FP-*growth* algorithm
+
+FP-*growth* described previously is a main memory-based frequent pattern mining algorithm. However, when the database is large, or when the `min_sup` threshold is quite low, it is unrealistic to assume that FP-tree of a database can fit into main memory. The *Projected Database* algorithm that we describe here scales very well with large databases 
+
+*Definition* (Projected Database). Let a<sub>i</sub> be a frequent item in a transaction database, DB. The a<sub>i</sub>-projected database for a<sub>i</sub>
+is derived from DB by collecting all the transactions containing a<sub>i</sub> and removing from
+them (1) infrequent items, (2) all frequent items after a<sub>i</sub> in the list of frequent items, and
+(3) a<sub>i</sub> itself.
+
+*Alogrithm* : Partition the DB into a set of projected DBs and then for each p-projected database, where p is a frequent item from DB, construct p-conditional FP-tree and mine frequent patterns from it.
+
+
+
 ### 3. How to use this library
 Source code is contained in `src\rule-mining\fpgrowth\` where `fpgrowth` directory is a python package and you can import the following functions:
 
@@ -124,6 +134,13 @@ For Frequent Itemset Generation
 ```python
 gen_freq_itemsets(transactions, null_label=None, min_sup=0.5)
   ```
+_(see the implementation docstrings for more information about the parameters)_
+
+For Frequent Itemset Generation with Projected DBs
+
+```python
+gen_freq_itemsets_projected_DB(transactions, null_label=None, min_sup=0.5)
+```
 _(see the implementation docstrings for more information about the parameters)_
 
 ## About the dataset used

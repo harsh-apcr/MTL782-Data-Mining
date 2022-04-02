@@ -1,3 +1,9 @@
+"""
+Created on Sun March 22 15:03:45 2021
+@author: Harsh Sharma (Student ID: 2019MT60628)
+Title: Hash-Tree Data Structure Implementation In Python 3
+"""
+
 import numpy as np
 from llist import DLinkedList
 import itertools

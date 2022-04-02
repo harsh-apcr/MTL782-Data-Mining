@@ -1,3 +1,6 @@
+"""
+DoublyLinkedList as an auxiliary data-structure for efficiency in FP-tree implementation
+"""
 
 
 class Node:

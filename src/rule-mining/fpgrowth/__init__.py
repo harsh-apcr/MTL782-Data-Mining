@@ -1,1 +1,1 @@
-from .fp_growth import gen_freq_itemsets
+from fp_growth import gen_freq_itemsets, gen_freq_itemsets_projected_DB

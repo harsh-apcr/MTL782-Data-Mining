@@ -1,3 +1,8 @@
+"""
+DoublyLinkedList as an auxiliary data-structure for efficiency in Apriori-Algorithm
+"""
+
+
 class ListFullException(Exception):
     pass
 
@@ -125,18 +130,3 @@ class DLinkedList:
                 str_output += ',\n'
         str_output += ']'
         return str_output
-
-
-# def list_hash(int_ls):
-#     hash_value = 0
-#     for integer in int_ls:
-#         x = integer
-#         x ^= x >> 17
-#         x += 830770091
-#         x ^= x >> 11
-#         x += -1404298415
-#         x ^= x >> 15
-#         x += 830770091
-#         x ^= x >> 14
-#         hash_value += x
-#     return hash_value
