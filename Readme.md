@@ -1,9 +1,3 @@
-# MTL-782
-### Harsh Sharma (2019MT60628)
-### Jasmeet Singh (2019MT60631)
-### Rishav Rukhmanghd Raj (2019MT10652)
-
----
 # Assignment 1
 
 ## What the data is all about ?
